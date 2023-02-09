@@ -1,0 +1,6 @@
+README.md
+setup.py
+src/nlp_ood_project.egg-info/PKG-INFO
+src/nlp_ood_project.egg-info/SOURCES.txt
+src/nlp_ood_project.egg-info/dependency_links.txt
+src/nlp_ood_project.egg-info/top_level.txt
