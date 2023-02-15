@@ -1,0 +1,5 @@
+*.ipynb
+!Demo.ipynb
+
+*.egg-info
+*.txt
