@@ -1,14 +1,13 @@
 import numpy as np
 
-
 class Mahalanobis():
 
     def __init__(
         self,
-        train_embeds_in,
-        test_embeds_in,
-        test_embeds_out,
-        train_labels_in: np.array,
+        train_embeds_in: np.ndarray,
+        test_embeds_in: np.ndarray,
+        test_embeds_out: np.ndarray,
+        train_labels_in: np.ndarray,
         substract_mean: bool = True,
         normalize_to_unity: bool = True,
         substract_train_distance: bool = True,
@@ -31,7 +30,10 @@ class Mahalanobis():
         self.check_metrics()
         self.compute_distances()
 
+        return self.onehots, self.scores
+
     def pre_normalize(self):
+        """Normalize datasets"""
         all_train_mean = np.mean(self.train_embeds_in, axis=0, keepdims=True)
 
         if self.substract_mean:
@@ -47,19 +49,22 @@ class Mahalanobis():
             self.description += " unit norm,"
 
     def get_metrics(self):
+        """Get mean, cov matrix and inverse of cov matrix"""
         self.mean = np.mean(self.train_embeds_in,axis=0)
         self.cov = np.cov((self.train_embeds_in-(self.mean.reshape([1,-1]))).T)
         self.cov_inv = np.linalg.inv(self.cov)
 
         self.class_means = [np.mean(self.train_embeds_in[self.train_labels_in == c],axis=0) for c in range(self.c)]
-        self.class_cov_invs = [np.cov((self.train_embeds_in[self.train_embeds_in == c]-(self.class_means[c].reshape([1,-1]))).T) for c in range(self.c)]
+        self.class_cov_invs = [np.cov((self.train_embeds_in[self.train_labels_in == c]-(self.class_means[c].reshape([1,-1]))).T) for c in range(self.c)]
         self.class_covs = [np.linalg.inv(self.class_cov_invs[c]) for c in range(self.c)]
 
     def check_metrics(self):
+        """Check values for cov matrix and if cov_inv*cov give us identity matrix"""
         print(f"Average value of cov_inv matrix : {np.mean(self.cov_inv)}")
         print(f"Average distance between cov_inv*cov and identity matrix : {np.mean(np.abs(self.cov_inv.dot(self.cov) - np.eye(self.cov.shape[0])))}")
 
     def compute_distances(self):
+        """Compute Mahalanobis distance for in and out datasets"""
         self.out_totrain = self._maha_distance(self.test_embeds_out, self.cov_inv, self.mean)
         self.in_totrain = self._maha_distance(self.test_embeds_in, self.cov_inv, self.mean)
 
@@ -76,9 +81,7 @@ class Mahalanobis():
         self.onehots = np.array([1]*len(self.out_scores) + [0]*len(self.in_scores))
         self.scores = np.concatenate([self.out_scores, self.in_scores],axis=0)
 
-        return self.onehots, self.scores
-
-    def _maha_distance(self, xs: np.array, cov_inv: np.array, mean: np.array) -> np.array:
+    def _maha_distance(self, xs: np.ndarray, cov_inv: np.ndarray, mean: np.ndarray) -> np.array:
         diffs = xs - mean.reshape([1,-1])
 
         second_powers = np.matmul(diffs, cov_inv)*diffs
