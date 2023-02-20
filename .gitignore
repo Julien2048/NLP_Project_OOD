@@ -3,3 +3,6 @@
 
 *.egg-info
 *.txt
+!requirements.txt
+
+*.DS_Store
