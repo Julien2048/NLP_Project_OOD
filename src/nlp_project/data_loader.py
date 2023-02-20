@@ -5,6 +5,7 @@ from glob import glob
 import numpy as np
 from sklearn.model_selection import train_test_split
 from datasets import load_dataset
+import torch
 
 class IMDBDataset:
     def __init__(self):
@@ -143,7 +144,21 @@ class MNLIDataset():
     def load_texts(self):
         return np.load("mnli_test_texts.npy")
 
-        
+
+class CreateDataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+
+    def __len__(self):
+        return len(self.labels)
+
+
 def get_reuters_dataset():
     reuters_filename_test = sorted(glob(op.join(".", "reuters", "reuters", "test", "*")))
     reuters_filename_train = sorted(glob(op.join(".", "reuters", "reuters", "training", "*")))
