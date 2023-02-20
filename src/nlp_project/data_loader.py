@@ -76,14 +76,14 @@ class IMDBDataset:
         np.save("imdb_train_texts.npy", self.train_texts)
         np.save("imdb_test_texts.npy", self.test_texts)
 
-    def load_labels(self):
-        imdb_train_labels = np.load("imdb_train_labels.npy")
-        imdb_test_labels = np.load("imdb_test_labels.npy")
+    def load_labels(self, path=""):
+        imdb_train_labels = np.load(path + "imdb_train_labels.npy")
+        imdb_test_labels = np.load(path + "imdb_test_labels.npy")
         return imdb_train_labels, imdb_test_labels
 
-    def load_texts(self):
-        imdb_train_texts = np.load("imdb_train_texts.npy")
-        imdb_test_texts = np.load("imdb_test_texts.npy")
+    def load_texts(self, path=""):
+        imdb_train_texts = np.load(path + "imdb_train_texts.npy")
+        imdb_test_texts = np.load(path + "imdb_test_texts.npy")
         return imdb_train_texts, imdb_test_texts
 
 
@@ -139,14 +139,14 @@ class MovieReviewDataset:
         np.save("movie_review_train_texts.npy", self.train_texts)
         np.save("movie_review_test_texts.npy", self.test_texts)
 
-    def load_labels(self):
-        movie_review_train_labels = np.load("movie_review_train_labels.npy")
-        movie_review_test_labels = np.load("movie_review_test_labels.npy")
+    def load_labels(self, path=""):
+        movie_review_train_labels = np.load(path + "movie_review_train_labels.npy")
+        movie_review_test_labels = np.load(path + "movie_review_test_labels.npy")
         return movie_review_train_labels, movie_review_test_labels
 
-    def load_texts(self):
-        movie_review_train_texts = np.load("movie_review_train_texts.npy")
-        movie_review_test_texts = np.load("movie_review_test_texts.npy")
+    def load_texts(self, path=""):
+        movie_review_train_texts = np.load(path + "movie_review_train_texts.npy")
+        movie_review_test_texts = np.load(path + "movie_review_test_texts.npy")
         return movie_review_train_texts, movie_review_test_texts
 
 
@@ -169,8 +169,8 @@ class MNLIDataset:
     def save_texts(self):
         np.save("mnli_test_texts.npy", self.test_texts)
 
-    def load_texts(self):
-        return np.load("mnli_test_texts.npy")
+    def load_texts(self, path=""):
+        return np.load(path + "mnli_test_texts.npy")
 
 
 class ReutersDataset:
@@ -242,20 +242,20 @@ class ReutersDataset:
         np.save("reuters_in_test_labels.npy", self.in_newsgroups_test_labels)
         np.save("reuters_out_test_labels.npy", self.out_newsgroups_test_labels)
 
-    def load_texts(self):
-        in_newsgroups_train_texts = np.load("reuters_in_train_texts.npy")
-        in_newsgroups_test_texts = np.load("reuters_in_test_texts.npy")
-        out_newsgroups_test_texts = np.load("reuters_out_test_texts.npy")
+    def load_texts(self, path=""):
+        in_newsgroups_train_texts = np.load(path + "reuters_in_train_texts.npy")
+        in_newsgroups_test_texts = np.load(path + "reuters_in_test_texts.npy")
+        out_newsgroups_test_texts = np.load(path + "reuters_out_test_texts.npy")
         return (
             in_newsgroups_train_texts,
             in_newsgroups_test_texts,
             out_newsgroups_test_texts,
         )
 
-    def load_labels(self):
-        in_newsgroups_train_labels = np.load("reuters_in_train_labels.npy")
-        in_newsgroups_test_labels = np.load("reuters_in_test_labels.npy")
-        out_newsgroups_test_labels = np.load("reuters_out_test_labels.npy")
+    def load_labels(self, path=""):
+        in_newsgroups_train_labels = np.load(path + "reuters_in_train_labels.npy")
+        in_newsgroups_test_labels = np.load(path + "reuters_in_test_labels.npy")
+        out_newsgroups_test_labels = np.load(path + "reuters_out_test_labels.npy")
         return (
             in_newsgroups_train_labels,
             in_newsgroups_test_labels,
