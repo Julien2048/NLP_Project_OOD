@@ -62,6 +62,7 @@ class DistilBertClassifier:
         self,
         device,
         training: bool,
+        num_labels=2,
         batch_size=32,
         weight_decay=0.01,
         warmup_ratio=0.06,
@@ -80,7 +81,9 @@ class DistilBertClassifier:
             self.LOG_STEPS = log_steps
 
             self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
-                "distilbert-base-uncased", output_hidden_states=True
+                "distilbert-base-uncased",
+                output_hidden_states=True,
+                num_labels=num_labels,
             ).to(self.device)
 
         else:

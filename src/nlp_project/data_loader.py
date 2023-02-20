@@ -1,5 +1,3 @@
-import os
-import sys
 import os.path as op
 from glob import glob
 import numpy as np
@@ -7,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from datasets import load_dataset
 import torch
 import random
+from sklearn.datasets import fetch_20newsgroups
 
 
 class IMDBDataset:
@@ -172,6 +171,96 @@ class MNLIDataset:
 
     def load_texts(self):
         return np.load("mnli_test_texts.npy")
+
+
+class ReutersDataset:
+    def __init__(self):
+        target_names = [
+            "alt.atheism",
+            "comp.graphics",
+            "comp.os.ms-windows.misc",
+            "comp.sys.ibm.pc.hardware",
+            "comp.sys.mac.hardware",
+            "comp.windows.x",
+            "misc.forsale",
+            "rec.autos",
+            "rec.motorcycles",
+            "rec.sport.baseball",
+            "rec.sport.hockey",
+            "sci.crypt",
+            "sci.electronics",
+            "sci.med",
+            "sci.space",
+            "soc.religion.christian",
+            "talk.politics.guns",
+            "talk.politics.mideast",
+            "talk.politics.misc",
+            "talk.religion.misc",
+        ]
+
+        self.in_target_names = target_names[:15]
+        self.out_target_names = target_names[15:]
+
+    def get_dataset(self):
+        train_in = fetch_20newsgroups(subset="train", categories=self.in_target_names)
+        test_in = fetch_20newsgroups(subset="test", categories=self.in_target_names)
+        test_out = fetch_20newsgroups(subset="test", categories=self.out_target_names)
+
+        self.in_newsgroups_train_texts = [
+            text.replace("\n", " ").replace("\t", " ").replace(">", "")
+            for text in train_in.data
+        ]
+        self.in_newsgroups_train_labels = train_in.target
+        self.in_newsgroups_test_texts = [
+            text.replace("\n", " ").replace("\t", " ").replace(">", "")
+            for text in test_in.data
+        ]
+        self.in_newsgroups_test_labels = test_in.target
+
+        self.out_newsgroups_test_texts = [
+            text.replace("\n", " ").replace("\t", " ").replace(">", "")
+            for text in test_out.data
+        ]
+        self.out_newsgroups_test_labels = test_out.target
+
+        return (
+            self.in_newsgroups_train_texts,
+            self.in_newsgroups_test_texts,
+            self.out_newsgroups_test_texts,
+            self.in_newsgroups_train_labels,
+            self.in_newsgroups_test_labels,
+            self.out_newsgroups_test_labels,
+        )
+
+    def save_texts(self):
+        np.save("reuters_in_train_texts.npy", self.in_newsgroups_train_texts)
+        np.save("reuters_in_test_texts.npy", self.in_newsgroups_test_texts)
+        np.save("reuters_out_test_texts.npy", self.out_newsgroups_test_texts)
+
+    def save_labels(self):
+        np.save("reuters_in_train_labels.npy", self.in_newsgroups_train_labels)
+        np.save("reuters_in_test_labels.npy", self.in_newsgroups_test_labels)
+        np.save("reuters_out_test_labels.npy", self.out_newsgroups_test_labels)
+
+    def load_texts(self):
+        in_newsgroups_train_texts = np.load("reuters_in_train_texts.npy")
+        in_newsgroups_test_texts = np.load("reuters_in_test_texts.npy")
+        out_newsgroups_test_texts = np.load("reuters_out_test_texts.npy")
+        return (
+            in_newsgroups_train_texts,
+            in_newsgroups_test_texts,
+            out_newsgroups_test_texts,
+        )
+
+    def load_labels(self):
+        in_newsgroups_train_labels = np.load("reuters_in_train_labels.npy")
+        in_newsgroups_test_labels = np.load("reuters_in_test_labels.npy")
+        out_newsgroups_test_labels = np.load("reuters_out_test_labels.npy")
+        return (
+            in_newsgroups_train_labels,
+            in_newsgroups_test_labels,
+            out_newsgroups_test_labels,
+        )
 
 
 class CreateDataset(torch.utils.data.Dataset):
