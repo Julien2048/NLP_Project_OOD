@@ -51,11 +51,9 @@ class TokenizeData:
             self.attention_mask,
         )
 
-    def load_tokens(self, name_data, name_splt, path=""):
-        input_ids = np.load(path + name_data + "_input_ids_" + name_splt + ".npy")
-        attention_mask = np.load(
-            path + name_data + "_attention_mask_" + name_splt + ".npy"
-        )
+    def load_tokens(self, name_data, name_splt):
+        input_ids = np.load(name_data + "_input_ids_" + name_splt + ".npy")
+        attention_mask = np.load(name_data + "_attention_mask_" + name_splt + ".npy")
         return input_ids, attention_mask
 
 
@@ -63,7 +61,7 @@ class DistilBertClassifier:
     def __init__(
         self,
         device,
-        training: bool,
+        path_pretrained_model="distilbert-base-uncased",
         num_labels=2,
         batch_size=32,
         weight_decay=0.01,
@@ -73,24 +71,19 @@ class DistilBertClassifier:
         log_steps=100,
     ):
         self.device = device
+        self.BATCH_SIZE = batch_size
+        self.WEIGHT_DECAY = weight_decay
+        self.WARMUP_RATIO = warmup_ratio
+        self.LEARNING_RATE = learning_rate
+        self.NUM_EPOCHS = num_epochs
+        self.LOG_STEPS = log_steps
+        self.num_labels = num_labels
 
-        if training:
-            self.BATCH_SIZE = batch_size
-            self.WEIGHT_DECAY = weight_decay
-            self.WARMUP_RATIO = warmup_ratio
-            self.LEARNING_RATE = learning_rate
-            self.NUM_EPOCHS = num_epochs
-            self.LOG_STEPS = log_steps
-            self.num_labels = num_labels
-
-            self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
-                "distilbert-base-uncased",
-                output_hidden_states=True,
-                num_labels=self.num_labels,
-            ).to(self.device)
-
-        else:
-            pass
+        self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
+            path_pretrained_model,
+            output_hidden_states=True,
+            num_labels=self.num_labels,
+        ).to(self.device)
 
     def train_model(self, train_dataset, test_dataset):
         # Define the training hyperparameters
@@ -116,11 +109,6 @@ class DistilBertClassifier:
 
     def save_pretrained_model(self, name_model, path="model_trained/"):
         self.model.save_pretrained(path + name_model)
-
-    def load_pretrained_model(self, path):
-        return DistilBertForSequenceClassificationPreLogits.from_pretrained(
-            path, output_hidden_states=True
-        ).to(self.device)
 
     def get_prelogit_logit(
         self,
@@ -157,7 +145,7 @@ class DistilBertClassifier:
 
         return prelogits_array, logits_array
 
-    def load_prelogit_logit(self, name_data, name_splt, path=""):
-        prelogits = np.load(path + name_data + "_prelogits_" + name_splt + ".npy")
-        logits = np.load(path + name_data + "_logits_" + name_splt + ".npy")
+    def load_prelogit_logit(self, name_data, name_splt):
+        prelogits = np.load(name_data + "_prelogits_" + name_splt + ".npy")
+        logits = np.load(name_data + "_logits_" + name_splt + ".npy")
         return prelogits, logits
