@@ -1,6 +1,7 @@
 *.ipynb
 !Demo.ipynb
 !Demo_imdb_mr_mnli.ipynb
+!Demo_reuters.ipynb
 
 *.egg-info
 *.txt
