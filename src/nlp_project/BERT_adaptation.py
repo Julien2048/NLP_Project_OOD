@@ -81,11 +81,12 @@ class DistilBertClassifier:
             self.LEARNING_RATE = learning_rate
             self.NUM_EPOCHS = num_epochs
             self.LOG_STEPS = log_steps
+            self.num_labels = num_labels
 
             self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
                 "distilbert-base-uncased",
                 output_hidden_states=True,
-                num_labels=num_labels,
+                num_labels=self.num_labels,
             ).to(self.device)
 
         else:
@@ -134,7 +135,7 @@ class DistilBertClassifier:
 
         # Split the test set into batches
         prelogits_array = np.empty(shape=(nb_obs, 768))
-        logits_array = np.empty(shape=(nb_obs, 2))
+        logits_array = np.empty(shape=(nb_obs, self.num_labels))
 
         with torch.no_grad():
             for i in range(0, nb_obs, size_array):
