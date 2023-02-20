@@ -163,7 +163,7 @@ class MNLIDataset:
         out_mnli_matched = mnli_matched["premise"]
 
         self.test_texts = out_mnli_mismatched + out_mnli_matched
-        self.test_texts = random.shuffle(self.test_texts)
+        random.shuffle(self.test_texts)
 
         return self.test_texts
 
