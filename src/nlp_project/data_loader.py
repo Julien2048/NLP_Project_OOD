@@ -297,6 +297,23 @@ class SST2Dataset:
         return train_texts, test_texts
 
 
+class RTEDataset:
+    def __init__(self):
+        pass
+
+    def get_dataset(self):
+        dataset = load_dataset("glue", "rte")
+        self.test_texts = dataset["test"]["sentence1"]
+        return self.test_texts
+
+    def save_texts(self):
+        np.save("rte_test_texts.npy", self.test_texts)
+
+    def load_texts(self, path=""):
+        test_texts = np.load(path + "rte_test_texts.npy")
+        return test_texts
+
+
 class CreateDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
