@@ -263,6 +263,40 @@ class ReutersDataset:
         )
 
 
+class SST2Dataset:
+    def __init__(self):
+        pass
+
+    def get_dataset(self):
+        dataset = load_dataset("sst2")
+
+        self.train_texts = dataset["train"]["sentence"]
+        self.train_labels = dataset["train"]["label"]
+
+        self.test_texts = dataset["test"]["sentence"]
+        self.test_labels = dataset["test"]["label"]
+
+        return self.train_texts, self.test_texts, self.train_labels, self.test_labels
+
+    def save_labels(self):
+        np.save("sst2_train_labels.npy", self.train_labels)
+        np.save("sst2_test_labels.npy", self.test_labels)
+
+    def save_texts(self):
+        np.save("sst2_train_texts.npy", self.train_texts)
+        np.save("sst2_test_texts.npy", self.test_texts)
+
+    def load_labels(self, path=""):
+        train_labels = np.load(path + "sst2_train_labels.npy")
+        test_labels = np.load(path + "sst2_test_labels.npy")
+        return train_labels, test_labels
+
+    def load_texts(self, path=""):
+        train_texts = np.load(path + "sst2_train_texts.npy")
+        test_texts = np.load(path + "sst2_test_texts.npy")
+        return train_texts, test_texts
+
+
 class CreateDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
