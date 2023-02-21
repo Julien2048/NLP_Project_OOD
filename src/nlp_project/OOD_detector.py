@@ -92,3 +92,61 @@ class Mahalanobis():
             return np.sum(np.sqrt(np.abs(second_powers)),axis=1)
         elif self.norm_name in ["Linfty"]:
             return np.max(second_powers,axis=1)
+
+
+class MaxSoftmax():
+    def __init__(
+        self,
+        in_logits: np.ndarray,
+        out_logits: np.ndarray,        
+    ):
+        self.in_logits = in_logits
+        self.out_logits = out_logits
+
+    def __call__(self):
+        self.compute_scores()
+        return self.onehots, self.scores
+
+    def _softmax(zs):
+        exps = np.exp(zs-np.max(zs))
+        return exps/np.sum(exps,axis=-1,keepdims=True)
+    
+    def compute_scores(self):
+        self.scores = np.array(
+            np.concatenate([
+                np.max(self._softmax(self.in_logits), axis=-1),
+                np.max(self._softmax(self.out_logits), axis=-1),
+            ], axis=0)
+        )
+
+        self.onehots = np.array(
+            [1]*len(self.in_logits)+[0]*len(self.out_logits)
+        )
+
+class KLDivergence():
+    def __init__(
+        self,
+        in_logits: np.ndarray,
+        out_logits: np.ndarray,
+    ):
+        self.in_logits = in_logits
+        self.out_logits = out_logits
+
+    def __call__(self):
+        self.compute_scores()
+        return self.onehots, self.scores
+
+    def _kldivergence(zs: np.ndarray):
+        unif = np.ones(zs.shape[1])
+        return np.sum(np.multiply(np.log(np.divide(zs, unif)), zs), axis=1)
+        
+
+    def compute_scores(self):
+        
+        self.scores = np.concatenate(
+            [self._kldivergence(self.in_logits), self._kldivergence(self.out_logits)]
+        )
+
+        self.onehots = np.array(
+            [1]*len(self.in_logits)+[0]*len(self.out_logits)
+        )  
