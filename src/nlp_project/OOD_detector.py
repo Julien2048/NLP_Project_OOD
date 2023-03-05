@@ -1,4 +1,5 @@
 import numpy as np
+from nlp_project.utils import kldivergence, softmax, sampled_sphere
 
 class Mahalanobis():
 
@@ -106,16 +107,12 @@ class MaxSoftmax():
     def __call__(self):
         self.compute_scores()
         return self.onehots, self.scores
-
-    def _softmax(zs):
-        exps = np.exp(zs-np.max(zs))
-        return exps/np.sum(exps,axis=-1,keepdims=True)
     
     def compute_scores(self):
         self.scores = np.array(
             np.concatenate([
-                np.max(self._softmax(self.in_logits), axis=-1),
-                np.max(self._softmax(self.out_logits), axis=-1),
+                np.max(softmax(self.in_logits), axis=-1),
+                np.max(softmax(self.out_logits), axis=-1),
             ], axis=0)
         )
 
@@ -135,18 +132,60 @@ class KLDivergence():
     def __call__(self):
         self.compute_scores()
         return self.onehots, self.scores
-
-    def _kldivergence(zs: np.ndarray):
-        unif = np.ones(zs.shape[1])
-        return np.sum(np.multiply(np.log(np.divide(zs, unif)), zs), axis=1)
-        
-
+ 
     def compute_scores(self):
         
         self.scores = np.concatenate(
-            [self._kldivergence(self.in_logits), self._kldivergence(self.out_logits)]
+            [kldivergence(softmax(self.in_logits)), kldivergence(softmax(self.out_logits))]
         )
 
         self.onehots = np.array(
             [1]*len(self.in_logits)+[0]*len(self.out_logits)
         )  
+
+
+class IRW():
+    def __init__(
+        self,
+        in_train: np.ndarray,
+        in_test: np.ndarray,
+        out_test: np.ndarray,
+        n_dirs: int = None
+    ):
+        self.in_train = in_train
+        self.in_test = in_test
+        self.out_test = out_test
+        self.n_dirs = n_dirs
+
+    def __call__(self):
+        self.get_unit_sphere_vectors()
+        self.get_unit_sphere_vectors()
+        return self.onehots, self.scores
+
+    def get_unit_sphere_vectors(self):
+        if not self.n_dirs:
+            self.n_dirs = 100 * self.in_train.shape[1]
+
+        self.U = sampled_sphere(self.n_dirs, self.in_train.shape[1])
+
+    def d_irw(self, x):
+        return np.mean([
+            np.min(
+                np.mean(np.array([np.matmul(x_train - x, u) for x_train in self.in_train]) > 0), 
+                np.mean(np.array([np.matmul(x_train - x, u) for x_train in self.in_train]) <= 0)
+            )
+            for u in self.U
+        ])
+    
+    def compute_scores(self):
+        self.scores = np.concatenate(
+            [
+                np.array([self.d_irw(x) for x in self.in_test]),
+                np.array([self.d_irw(x) for x in self.out_test]),
+            ]
+        )
+
+        self.onehots = np.array(
+            [1]*len(self.in_test)+[0]*len(self.out_test)
+        )  
+    
