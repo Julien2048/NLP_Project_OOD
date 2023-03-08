@@ -94,6 +94,7 @@ class DistilBertClassifier:
             self.model = DistilBertForSequenceClassificationHiddenLayer.from_pretrained(
                 path_pretrained_model,
                 output_hidden_states=True,
+                output_attentions=True,
                 num_labels=self.num_labels,
             ).to(self.device)
 
