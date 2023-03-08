@@ -1,6 +1,7 @@
 import numpy as np
 from transformers import DistilBertTokenizerFast
 from transformers import DistilBertForSequenceClassificationPreLogits
+from transformers import DistilBertForSequenceClassificationHiddenLayer
 from transformers import Trainer, TrainingArguments
 import torch
 
@@ -63,6 +64,7 @@ class DistilBertClassifier:
     def __init__(
         self,
         device,
+        prelogits=True,
         path_pretrained_model="distilbert-base-uncased",
         num_labels=2,
         batch_size=32,
@@ -80,12 +82,20 @@ class DistilBertClassifier:
         self.NUM_EPOCHS = num_epochs
         self.LOG_STEPS = log_steps
         self.num_labels = num_labels
+        self.prelogits = prelogits
 
-        self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
-            path_pretrained_model,
-            output_hidden_states=True,
-            num_labels=self.num_labels,
-        ).to(self.device)
+        if self.prelogits:
+            self.model = DistilBertForSequenceClassificationPreLogits.from_pretrained(
+                path_pretrained_model,
+                output_hidden_states=True,
+                num_labels=self.num_labels,
+            ).to(self.device)
+        else:
+            self.model = DistilBertForSequenceClassificationHiddenLayer.from_pretrained(
+                path_pretrained_model,
+                output_hidden_states=True,
+                num_labels=self.num_labels,
+            ).to(self.device)
 
     def train_model(self, train_dataset, test_dataset):
         # Define the training hyperparameters
@@ -121,6 +131,9 @@ class DistilBertClassifier:
         size_array=100,
         save=False,
     ):
+        if not self.prelogits:
+            raise ValueError("The model is not a prelogits model")
+
         nb_obs = len(input_ids)
 
         # Split the test set into batches
@@ -151,3 +164,43 @@ class DistilBertClassifier:
         prelogits = np.load(path + name_data + "_prelogits_" + name_splt + ".npy")
         logits = np.load(path + name_data + "_logits_" + name_splt + ".npy")
         return prelogits, logits
+
+    def get_hidden_layer(
+        self,
+        input_ids,
+        attention_mask,
+        name_data=None,
+        name_splt=None,
+        size_array=100,
+        save=False,
+    ):
+        if self.prelogits:
+            raise ValueError("The model is not a hidden layer model")
+
+        nb_obs = len(input_ids)
+
+        # Split the test set into batches
+        hidden_layer_array = np.empty(shape=(nb_obs, 768))
+
+        with torch.no_grad():
+            for i in range(0, nb_obs, size_array):
+                input_ids_batch = input_ids[i : i + size_array]
+                attention_mask_batch = attention_mask[i : i + size_array]
+
+                outputs = self.model(
+                    input_ids=input_ids_batch, attention_mask=attention_mask_batch
+                )
+                hidden_layer = outputs["hidden_states"]
+
+                hidden_layer_array[i : i + size_array] = hidden_layer.cpu()
+
+        if save:
+            np.save(
+                name_data + "_hidden_layer_" + name_splt + ".npy", hidden_layer_array
+            )
+
+        return hidden_layer_array
+
+    def load_hidden_layer(self, name_data, name_splt, path: str = ""):
+        hidden_layer = np.load(path + name_data + "_hidden_layer_" + name_splt + ".npy")
+        return hidden_layer
