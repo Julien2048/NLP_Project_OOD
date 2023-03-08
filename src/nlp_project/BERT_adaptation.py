@@ -51,9 +51,11 @@ class TokenizeData:
             self.attention_mask,
         )
 
-    def load_tokens(self, name_data, name_splt):
-        input_ids = np.load(name_data + "_input_ids_" + name_splt + ".npy")
-        attention_mask = np.load(name_data + "_attention_mask_" + name_splt + ".npy")
+    def load_tokens(self, name_data, name_splt, path=""):
+        input_ids = np.load(path + name_data + "_input_ids_" + name_splt + ".npy")
+        attention_mask = np.load(
+            path + name_data + "_attention_mask_" + name_splt + ".npy"
+        )
         return input_ids, attention_mask
 
 
