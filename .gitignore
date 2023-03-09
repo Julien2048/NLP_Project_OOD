@@ -1,6 +1,7 @@
 *.ipynb
 !Demo.ipynb
-!Demo_imdb_mr_mnli.ipynb
+!get_data_train_model.ipynb
+!get_metric_ood.ipynb
 !Demo_reuters.ipynb
 
 *.egg-info
