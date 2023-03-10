@@ -57,10 +57,10 @@ class TokenizeData:
         attention_mask = np.load(
             path + name_data + "_attention_mask_" + name_splt + ".npy"
         )
-        input_ids, attention_mask = (
-            torch.Tensor(input_ids).long(),
-            torch.Tensor(attention_mask).long(),
-        )
+        #input_ids, attention_mask = (
+            #torch.Tensor(input_ids).long(),
+            #torch.Tensor(attention_mask).long(),
+        #)
         return input_ids, attention_mask
 
 
@@ -168,7 +168,7 @@ class DistilBertClassifier:
     def load_prelogit_logit(self, name_data, name_splt, path: str = ""):
         prelogits = np.load(path + name_data + "_prelogits_" + name_splt + ".npy")
         logits = np.load(path + name_data + "_logits_" + name_splt + ".npy")
-        prelogits, logits = torch.Tensor(prelogits).long(), torch.Tensor(logits).long()
+        #prelogits, logits = torch.Tensor(prelogits).long(), torch.Tensor(logits).long()
         return prelogits, logits
 
     def get_hidden_layer(
@@ -209,5 +209,5 @@ class DistilBertClassifier:
 
     def load_hidden_layer(self, name_data, name_splt, path: str = ""):
         hidden_layer = np.load(path + name_data + "_hidden_layer_" + name_splt + ".npy")
-        hidden_layer = torch.Tensor(hidden_layer).long()
+        #hidden_layer = torch.Tensor(hidden_layer).long()
         return hidden_layer
