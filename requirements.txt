@@ -1,6 +1,13 @@
-kaggle
-transformers == 4.26.1
+python==3.9
+numpy
+pandas>=0.23
+scikit-learn>=0.20
+matplotlib
+seaborn
+jupyter
+scipy
 datasets
 torch
-scikit-learn
-matplotlib
+transformers==4.26.1
+kaggle
+datasets
