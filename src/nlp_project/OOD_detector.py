@@ -197,6 +197,7 @@ class IRW:
     def __call__(self):
         self.get_unit_sphere_vectors()
         self.get_unit_sphere_vectors()
+        self.compute_scores()
         return self.onehots, self.scores
 
     def get_unit_sphere_vectors(self):
