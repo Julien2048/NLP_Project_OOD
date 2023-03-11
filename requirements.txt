@@ -1,4 +1,4 @@
-python==3.9
+python>=3.9
 numpy
 pandas>=0.23
 scikit-learn>=0.20
