@@ -3,8 +3,9 @@ from sklearn.preprocessing import normalize
 
 
 def softmax(zs: np.ndarray):
-    exps = np.exp(zs-np.max(zs))
-    return exps/np.sum(exps,axis=-1,keepdims=True)
+    exps = np.exp(zs - np.max(zs))
+    return exps / np.sum(exps, axis=-1, keepdims=True)
+
 
 def kldivergence(zs: np.ndarray):
     unif = np.ones(zs.shape[1])
@@ -12,8 +13,8 @@ def kldivergence(zs: np.ndarray):
 
 
 def sampled_sphere(n_dirs: int, d: int):
-    """ Produce ndirs samples of d-dimensional uniform distribution on the 
-        unit sphere
+    """Produce ndirs samples of d-dimensional uniform distribution on the
+    unit sphere
     """
 
     mean = np.zeros(d)
