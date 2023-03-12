@@ -26,8 +26,10 @@ class ResultsOOD:
         self.get_metrics()
         if self.print_metrics:
             self._print_metrics()
+            return self.auroc, self.aupr, self.fpr
         if self.make_plot:
             self.plot_results()
+            return self.auroc, self.aupr, self.fpr
 
     def get_metrics(self):
         self.auroc = roc_auc_score(self.onehots, self.scores)
