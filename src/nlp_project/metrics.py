@@ -13,7 +13,6 @@ class ResultsOOD:
         print_metrics: bool = True,
         make_plot: bool = True,
         add_to_title: str = None,
-        save_img: bool = True,
     ):
         self.onehots = onehots
         self.scores = scores
@@ -101,8 +100,5 @@ class ResultsOOD:
         plt.legend(fontsize=14)
 
         plt.tight_layout()
-
-        if self.save_img:
-            plt.savefig("results" + self.add_to_title.replace(" ", "_") + ".png")
 
         plt.show()
