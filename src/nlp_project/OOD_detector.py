@@ -181,13 +181,13 @@ class KLDivergence:
         self.onehots = np.array([1] * len(self.in_logits) + [0] * len(self.out_logits))
 
 
-class IRW:
+class IRW():
     def __init__(
         self,
         in_train: np.ndarray,
         in_test: np.ndarray,
         out_test: np.ndarray,
-        n_dirs: int = None,
+        n_dirs: int = None
     ):
         self.in_train = in_train
         self.in_test = in_test
@@ -195,7 +195,6 @@ class IRW:
         self.n_dirs = n_dirs
 
     def __call__(self):
-        self.get_unit_sphere_vectors()
         self.get_unit_sphere_vectors()
         self.compute_scores()
         return self.onehots, self.scores
@@ -207,26 +206,14 @@ class IRW:
         self.U = sampled_sphere(self.n_dirs, self.in_train.shape[1])
 
     def d_irw(self, x):
-        return np.mean(
-            [
-                np.min(
-                    np.mean(
-                        np.array(
-                            [np.matmul(x_train - x, u) for x_train in self.in_train]
-                        )
-                        > 0
-                    ),
-                    np.mean(
-                        np.array(
-                            [np.matmul(x_train - x, u) for x_train in self.in_train]
-                        )
-                        <= 0
-                    ),
-                )
-                for u in self.U
-            ]
-        )
-
+        return np.mean([
+            np.minimum(
+                np.mean(np.array([np.matmul(x_train - x, u) for x_train in self.in_train]) > 0), 
+                np.mean(np.array([np.matmul(x_train - x, u) for x_train in self.in_train]) <= 0)
+            )
+            for u in self.U
+        ])
+    
     def compute_scores(self):
         self.scores = np.concatenate(
             [
@@ -235,4 +222,6 @@ class IRW:
             ]
         )
 
-        self.onehots = np.array([1] * len(self.in_test) + [0] * len(self.out_test))
+        self.onehots = np.array(
+            [1]*len(self.in_test)+[0]*len(self.out_test)
+        ) 
