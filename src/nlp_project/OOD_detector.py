@@ -1,5 +1,6 @@
 import numpy as np
 from nlp_project.utils import kldivergence, softmax, sampled_sphere
+from tqdm import tqdm
 
 
 class Mahalanobis:
@@ -217,8 +218,8 @@ class IRW():
     def compute_scores(self):
         self.scores = np.concatenate(
             [
-                np.array([self.d_irw(x) for x in self.in_test]),
-                np.array([self.d_irw(x) for x in self.out_test]),
+                np.array([self.d_irw(x) for x in tqdm(self.in_test)]),
+                np.array([self.d_irw(x) for x in tqdm(self.out_test)]),
             ]
         )
 
