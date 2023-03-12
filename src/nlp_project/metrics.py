@@ -24,7 +24,7 @@ class ResultsOOD:
 
     def __call__(self):
         self.get_metrics()
-        if self.print_metrics:
+        if self.print_metrics and not self.plot_several:
             self._print_metrics()
         if self.make_plot:
             self.plot_results()
@@ -34,7 +34,8 @@ class ResultsOOD:
         precision, recall, _ = precision_recall_curve(self.onehots, self.scores)
         self.aupr = auc(recall, precision)
         fpr, tpr, _ = roc_curve(self.onehots, self.scores)
-        idx = (np.abs(tpr - 0.95)).argmin()
+        idx = np.argmin(np.abs(tpr - 0.95))
+        self.fpr = 1 - fpr[idx]
         self.fpr = fpr[idx]
 
     def _print_metrics(self):
@@ -43,7 +44,8 @@ class ResultsOOD:
         print(f"FPR : {round(self.fpr*100, 2)} %")
 
     def plot_results(self, min_value: float = None, max_value: float = None):
-        plt.figure(figsize=(10, 4), dpi=100)
+        if not self.plot_several:
+            plt.figure(figsize=(10, 4), dpi=100)
 
         self.out_scores, self.in_scores = (
             self.scores[self.onehots == 1],
