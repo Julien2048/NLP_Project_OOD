@@ -13,13 +13,14 @@ class ResultsOOD:
         print_metrics: bool = True,
         make_plot: bool = True,
         add_to_title: str = None,
+        plot_several: bool = False,
     ):
         self.onehots = onehots
         self.scores = scores
         self.print_metrics = print_metrics
         self.make_plot = make_plot
         self.add_to_title = add_to_title
-        self.save_img = save_img
+        self.plot_several = plot_several
 
     def __call__(self):
         self.get_metrics()
@@ -101,4 +102,5 @@ class ResultsOOD:
 
         plt.tight_layout()
 
-        plt.show()
+        if not self.plot_several:
+            plt.show()
