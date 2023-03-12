@@ -20,6 +20,7 @@ class ResultsOOD:
         self.print_metrics = print_metrics
         self.make_plot = make_plot
         self.add_to_title = add_to_title
+        self.save_img = save_img
 
     def __call__(self):
         self.get_metrics()
