@@ -7,5 +7,5 @@ if __name__ == "__main__":
         package_dir={"": "src"},
         author="Julien Mereau and Agathe Minaro",
         packages=find_namespace_packages('./src'),
-        python_requires=">=3.8",
+        python_requires=">=3.9",
     )
