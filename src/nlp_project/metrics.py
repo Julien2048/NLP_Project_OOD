@@ -34,8 +34,8 @@ class ResultsOOD:
         precision, recall, _ = precision_recall_curve(self.onehots, self.scores)
         self.aupr = auc(recall, precision)
         fpr, tpr, _ = roc_curve(self.onehots, self.scores)
-        idx = np.argmin(np.abs(tpr - 0.95))
-        self.fpr = 1 - fpr[idx]
+        idx = np.argmax(tpr >= 0.95)
+        self.fpr = fpr[idx]
 
     def _print_metrics(self):
         print(f"AUROC : {round(self.auroc*100, 2)} %")
