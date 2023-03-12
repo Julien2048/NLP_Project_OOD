@@ -36,7 +36,6 @@ class ResultsOOD:
         fpr, tpr, _ = roc_curve(self.onehots, self.scores)
         idx = np.argmin(np.abs(tpr - 0.95))
         self.fpr = 1 - fpr[idx]
-        self.fpr = fpr[idx]
 
     def _print_metrics(self):
         print(f"AUROC : {round(self.auroc*100, 2)} %")
