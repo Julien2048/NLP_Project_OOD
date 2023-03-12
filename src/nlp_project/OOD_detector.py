@@ -113,7 +113,7 @@ class Mahalanobis:
             self.out_scores -= self.out_totrain
             self.in_scores -= self.in_totrain
 
-        self.onehots = np.array([1] * len(self.out_scores) + [0] * len(self.in_scores))
+        self.onehots = np.array([0] * len(self.out_scores) + [1] * len(self.in_scores))
         self.scores = np.concatenate([self.out_scores, self.in_scores], axis=0)
 
     def _maha_distance(
