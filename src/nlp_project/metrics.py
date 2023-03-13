@@ -40,7 +40,7 @@ class ResultsOOD:
     def _print_metrics(self):
         print(f"AUROC : {round(self.auroc*100, 2)} %")
         print(f"AUPR : {round(self.aupr*100, 2)} %")
-        print(f"FPR : {round(self.fpr*100, 2)} %")
+        # print(f"FPR : {round(self.fpr*100, 2)} %")
 
     def plot_results(self, min_value: float = None, max_value: float = None):
         if not self.plot_several:
@@ -66,10 +66,10 @@ class ResultsOOD:
                 + "%"
                 + "\nAUPR="
                 + str(float(self.aupr * 100))[:6]
-                + "%"
-                + "\nFPR="
-                + str(float(self.fpr * 100))[:6]
                 + "%",
+                # + "\nFPR="
+                # + str(float(self.fpr * 100))[:6]
+                # + "%",
                 fontsize=14,
             )
         else:
