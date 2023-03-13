@@ -173,7 +173,7 @@ class MNLIDataset:
         return np.load(path + "mnli_test_texts.npy")
 
 
-class ReutersDataset:
+class NewsgroupDataset:
     def __init__(self):
         target_names = [
             "alt.atheism",
@@ -233,19 +233,19 @@ class ReutersDataset:
         )
 
     def save_texts(self):
-        np.save("reuters_in_train_texts.npy", self.in_newsgroups_train_texts)
-        np.save("reuters_in_test_texts.npy", self.in_newsgroups_test_texts)
-        np.save("reuters_out_test_texts.npy", self.out_newsgroups_test_texts)
+        np.save("newsgroup_in_train_texts.npy", self.in_newsgroups_train_texts)
+        np.save("newsgroup_in_test_texts.npy", self.in_newsgroups_test_texts)
+        np.save("newsgroup_out_test_texts.npy", self.out_newsgroups_test_texts)
 
     def save_labels(self):
-        np.save("reuters_in_train_labels.npy", self.in_newsgroups_train_labels)
-        np.save("reuters_in_test_labels.npy", self.in_newsgroups_test_labels)
-        np.save("reuters_out_test_labels.npy", self.out_newsgroups_test_labels)
+        np.save("newsgroup_in_train_labels.npy", self.in_newsgroups_train_labels)
+        np.save("newsgroup_in_test_labels.npy", self.in_newsgroups_test_labels)
+        np.save("newsgroup_out_test_labels.npy", self.out_newsgroups_test_labels)
 
     def load_texts(self, path=""):
-        in_newsgroups_train_texts = np.load(path + "reuters_in_train_texts.npy")
-        in_newsgroups_test_texts = np.load(path + "reuters_in_test_texts.npy")
-        out_newsgroups_test_texts = np.load(path + "reuters_out_test_texts.npy")
+        in_newsgroups_train_texts = np.load(path + "newsgroup_in_train_texts.npy")
+        in_newsgroups_test_texts = np.load(path + "newsgroup_in_test_texts.npy")
+        out_newsgroups_test_texts = np.load(path + "newsgroup_out_test_texts.npy")
         return (
             in_newsgroups_train_texts,
             in_newsgroups_test_texts,
@@ -253,9 +253,9 @@ class ReutersDataset:
         )
 
     def load_labels(self, path=""):
-        in_newsgroups_train_labels = np.load(path + "reuters_in_train_labels.npy")
-        in_newsgroups_test_labels = np.load(path + "reuters_in_test_labels.npy")
-        out_newsgroups_test_labels = np.load(path + "reuters_out_test_labels.npy")
+        in_newsgroups_train_labels = np.load(path + "newsgroup_in_train_labels.npy")
+        in_newsgroups_test_labels = np.load(path + "newsgroup_in_test_labels.npy")
+        out_newsgroups_test_labels = np.load(path + "newsgroup_out_test_labels.npy")
         return (
             in_newsgroups_train_labels,
             in_newsgroups_test_labels,

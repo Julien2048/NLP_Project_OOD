@@ -1,8 +1,8 @@
 *.ipynb
-!Demo.ipynb
-!get_data_train_model.ipynb
-!get_metric_ood.ipynb
-!Demo_reuters.ipynb
+!get_data_train_model_newsgroup.ipynb
+!get_data_train_model_imdb.ipynb
+!get_metric_ood_imdb.ipynb
+!get_metric_ood_newsgroup.ipynb
 
 *.egg-info
 *.txt
